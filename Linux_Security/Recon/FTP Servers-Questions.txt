@@ -1,0 +1,13 @@
+Questions
+	Find the version of vsftpd server.
+	Check whether anonymous login is allowed on the ftp server using nmap script.
+	Fetch the flag from FTP server.
+	
+Questions
+	Find the version of vsftpd server.
+	Check whether anonymous login is allowed on the ftp server using nmap script.
+	Fetch the flag from FTP server.
+
+Questions
+	Find the password of user “billy”. The FTP server terminates the session after 3 attempts.
+	Fetch the flag from FTP server.

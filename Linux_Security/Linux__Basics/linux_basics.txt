@@ -1,0 +1,240 @@
+https://attackdefense.com/challengedetails?cid=1809
+***************************************************************
+[root@rh8 ~]# cat autoftp.sh
+#!/usr/bin/expect -f
+set verbose_flag 1
+spawn ftp 192.168.0.101
+expect "Name "
+send "ftp\r"
+expect "Password:"
+send "ftp\r"
+expect "ftp>"
+send "prompt\r"
+expect "ftp>"
+send "ls\r"
+expect "ftp>"
+send "get flag\r"
+expect "ftp>"
+send "bye\r"
+expect EOF
+[root@rh8 ~]#
+[root@rh8 ~]# ./autoftp.sh
+spawn ftp 192.168.0.101
+Connected to 192.168.0.101 (192.168.0.101).
+220 (vsFTPd 3.0.3)
+Name (192.168.0.101:root): ftp
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> prompt
+Interactive mode off.
+ftp> ls
+227 Entering Passive Mode (192,168,0,101,140,147).
+150 Here comes the directory listing.
+-rw-r--r--    1 0        0              10 Feb 08 21:35 flag
+drwxr-xr-x    2 0        0               6 Jan 07  2022 pub
+226 Directory send OK.
+ftp> get flag
+local: flag remote: flag
+227 Entering Passive Mode (192,168,0,101,130,48).
+150 Opening BINARY mode data connection for flag (10 bytes).
+226 Transfer complete.
+10 bytes received in 3.5e-05 secs (285.71 Kbytes/sec)
+ftp> bye
+221 Goodbye.
+[root@rh8 ~]#
+
+https://attackdefense.com/challengedetails?cid=1810
+https://www.redhat.com/sysadmin/getting-started-socat
+https://www.redhat.com/en/engage/linux-management-ebook-s-201912231121
+***************************************************************
+root@attackdefense:~# cat autosocat.sh 
+#!/usr/bin/expect -f
+set verbose_flag 1
+spawn socat - TCP:192.141.140.3:2023
+/expect "root@victim-1:~# "
+send "ls -l\r"
+expect "root@victim-1:~# "
+send "cat flag\r"
+expect "root@victim-1:~# "
+send "exit\r"
+expect "EOF"
+root@attackdefense:~# 
+root@attackdefense:~# ./autosocat.sh 
+spawn socat - TCP:192.141.140.3:2023
+root@victim-1:~# ls -l
+ls -l
+total 4
+-rw-r--r-- 1 root root 33 Apr  4  2020 flag
+root@victim-1:~# cat flag
+cat flag
+f2e55e1ccdbbbab127f313c4d4787eec
+root@victim-1:~# exit
+exit
+exit
+
+https://attackdefense.com/challengedetails?cid=1811
+***************************************************************
+[root@rh8 ~]# cat autossh.sh
+#!/usr/bin/expect -f
+set verbose_flag 1
+spawn ssh sysadmin@192.168.0.101 -o StrictHostKeyChecking=no
+expect "password: "
+send "sysadmin\r"
+expect " ~]$ "
+send "ls -l\r"
+expect " ~]$ "
+send "echo 'Hello from script'>> hello.txt \r"
+expect " ~]$ "
+send "/usr/bin/date >> hello.txt\r"
+expect " ~]$ "
+send "/usr/bin/cat hello.txt\r"
+expect " ~]$ "
+send "exit\r"
+expect "EOF"
+
+[root@rh8 ~]# ./autossh.sh
+spawn ssh sysadmin@192.168.0.101 -o StrictHostKeyChecking=no
+sysadmin@192.168.0.101's password:
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Thu Feb  9 08:01:13 2023 from 192.168.0.101
+[sysadmin@rh8 ~]$ ls -l
+total 8
+-rw-rw-r--. 1 sysadmin sysadmin  29 Feb  9 07:58 h
+-rw-rw-r--. 1 sysadmin sysadmin 177 Feb  9 08:01 hello.txt
+[sysadmin@rh8 ~]$ echo 'Hello from script'>> hello.txt
+[sysadmin@rh8 ~]$ /usr/bin/date >> hello.txt
+[sysadmin@rh8 ~]$ /usr/bin/cat hello.txt
+Hello from script
+Hello from script
+Hello from script
+Thu Feb  9 08:00:21 EST 2023
+Hello from script
+Thu Feb  9 08:01:03 EST 2023
+Hello from script
+Thu Feb  9 08:01:13 EST 2023
+Hello from script
+Thu Feb  9 08:01:30 EST 2023
+[sysadmin@rh8 ~]$ exit
+logout
+Connection to 192.168.0.101 closed.
+[root@rh8 ~]#
+ 
+
+Tool: Socnet
+https://attackdefense.com/challengedetails?cid=1812
+
+==> # Initiate a TCP connection
+    [root@rh8 ~]# socat TCP4-LISTEN:4000,reuseaddr,fork -
+    [root@rh8 ~]# socat tcp:localhost:4000 -                    # connect
+
+==> # Initiate a UDP connection
+    [root@rh8 ~]# socat UDP4-LISTEN:4000,reuseaddr,fork -
+    [root@rh8 ~]# socat UDP:localhost:4000 -                    # connect
+
+
+FILENAME="server"
+openssl genrsa -des3 -passout pass:x1234 -out "$FILENAME.pass.key" 2048
+openssl rsa -passin pass:x1234 -in "$FILENAME.pass.key" -out "$FILENAME.key"
+openssl req -new -key "$FILENAME.key" -out "$FILENAME.csr"
+openssl x509 -req -sha256 -days 365 -in "$FILENAME.csr" -signkey "$FILENAME.key" -out "$FILENAME.crt"
+cat "$FILENAME.key" "$FILENAME.crt" > "$FILENAME.pem"
+
+FILENAME="client"
+openssl genrsa -des3 -passout pass:x1234 -out "$FILENAME.pass.key" 2048
+openssl rsa -passin pass:x1234 -in "$FILENAME.pass.key" -out "$FILENAME.key"
+openssl req -new -key "$FILENAME.key" -out "$FILENAME.csr"
+openssl x509 -req -sha256 -days 365 -in "$FILENAME.csr" -signkey "$FILENAME.key" -out "$FILENAME.crt"
+cat "$FILENAME.key" "$FILENAME.crt" > "$FILENAME.pem"
+
+
+[root@rh8 ~]# ls -l
+-rw-r--r--. 1 root root 1115 Feb  9 08:27 client.crt
+-rw-r--r--. 1 root root  952 Feb  9 08:27 client.csr
+-rw-------. 1 root root 1679 Feb  9 08:26 client.key
+-rw-------. 1 root root 1751 Feb  9 08:26 client.pass.key
+-rw-r--r--. 1 root root 2794 Feb  9 08:28 client.pem
+-rw-r--r--. 1 root root 1115 Feb  9 08:21 server.crt
+-rw-r--r--. 1 root root  952 Feb  9 08:20 server.csr
+-rw-------. 1 root root 1675 Feb  9 08:16 server.key
+-rw-------. 1 root root 1743 Feb  9 08:14 server.pass.key
+-rw-r--r--. 1 root root 2790 Feb  9 08:22 server.pem
+
+==> # Initiate a SSL connection
+socat OPENSSL-LISTEN:4000,reuseaddr,pf=ip4,fork,cert=./server.pem,cafile=./client.pem -     #Listen ports
+socat OPENSSL:localhost:4000,verify=0,cert=./client.pem,cafile=./server.pem -               #Connect ports
+
+==> # Initiate a Shell(bash) connection
+socat TCP4-LISTEN:4000,reuseaddr,fork EXEC:/bin/bash    #Listen ports
+socat TCP4:localhost:4000 -                             #Connect ports
+
+==> # Initiate a socket connection
+socat UNIX-LISTEN:./test.sock,fork -    #Listen ports
+socat UNIX-CONNECT:./test.sock -        #Connect ports
+
+==> # Initiate a port-forwarding connection
+socat TCP4-LISTEN:8000,fork,reuseaddr TCP:192.116.192.3:22
+ssh -p8000 student@127.0.0.1
+
+Tool: Netcat
+https://attackdefense.com/challengedetails?cid=1813
+1- Use netcat to listen on TCP port 4000 of the localhost. Open a new tab and use netcat to connect to the listening instance.
+2- Use netcat to listen on UDP port 4000 of the localhost. Open a new tab and use netcat to connect to the listening instance.
+3- Use netcat to listen on port 4000 of the localhost and provide bash access to any session connecting to it. Open a new tab and use netcat to connect to the listening instance. 
+4- Use netcat to listen on port 4000 of the localhost and log the communication exchange into a file.  Open a new tab and use netcat to connect to the listening instance.  
+5- Use netcat to listen on port 4000 of the localhost. Open a new tab and use netcat to connect to the listening instance. Transfer a dummy file from connecting instance t listening instance.
+6- Use netcat as a port scanner to scan the first 1000 ports of the other two machines present on the network and discover their open ports.
+7- Connect to telnet service running on a remote machine with netcat using the following credentials.
+        - Username: administrator
+        - Password: 1q2w3e4r
+8- Connect to a web server using netcat and fetch the index page. 
+9- Create a dummy web server using netcat. Use curl command to interact with this dummy web server.
+
+
+
+nc -l 4000
+nc 192.168.0.101 4000
+
+nc -l -u 4000
+nc 192.168.0.101 -u 4000
+
+nc -l 4000 -e /bin/bash  #nc -l 4000 -c /bin/bash
+nc 192.168.0.101 4000
+
+nc -l 4000 -c /bin/bash -o simple.txt -x hex.txt
+nc 192.168.0.101 4000           #connect ports
+
+nc -zv 192.147.246.3 1-10000    # As port scanner
+
+nc -t 192.168.0.101 23 # connect telnet ports
+
+==> Fingerprinting Webapp
+*** Fingerprinting, interacting and attacking a Web application from a command-line interface (CLI) baffles most newbies. This lab covers different ways of doing the same.
+
+Usage of browsh:
+      --debug                  Log to ./debug.log
+      --firefox.path string    Path to Firefox executable (default "firefox")
+      --firefox.use-existing   Whether Browsh should launch Firefox or not
+      --firefox.with-gui       Don't use headless Firefox
+      --http-server-mode       Run as an HTTP service
+      --monochrome             Start browsh in monochrome mode
+      --startup-url string     URL to launch at startup (default "https://www.brow.sh")
+      --time-limit int         Kill Browsh after the specified number of seconds
+      --version                Output current Browsh version
+
+
+Objective: Try the following less known hacks.
+        1-Use python to start a webserver in the present working directory. Open another terminal and do a curl request to it.
+        2-View bash command history.
+        3-Fire a command and make sure it is not captured in the bash command history.
+        4-List all lines of a file in reverse order (i.e. last line first).
+        5-Delete all content of a file with one line command . 
+        6-Write output  of a command (say ps -ef) to three files at the same time.
+        7-Generate MD5 or SHA1 hash of a file
+        8-Find previous fired commands from bash history using reverse search.
+        9-Check information of a file.
+        10-Use screen to preserve the console output and running tasks in case of connection break (mostly useful while working on remote machines).
+

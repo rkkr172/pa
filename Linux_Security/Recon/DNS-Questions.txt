@@ -1,0 +1,28 @@
+Questions:
+	What is the ip address of primary Name server of witrap.com ?
+	What is the ipv4 address of witrap.com ?
+	What is the ipv6 address of witrap.com ?
+	How many mail server does witrap.com have?
+	What is the IP address of Mail Server of witrap.com which has highest priority?
+	What is the Canonical Name of www.witrap.com?
+	Which Certificate Authorities can Issue certificate for witrap.com?
+	What is the Geographical location of witrap.com ?
+	Can you find the flag provided in the information of witrap.com?
+	What is the  IP address of machine which support sip over TCP on witrap.com?
+	What is the administrative email of witrap.com?
+	Which domain corresponds to 192.168.67.8 ?
+
+Questions:
+	How many A Records are present for witrap.com and its subdomains?
+	What is the IP address of machine which support LDAP over TCP on witrap.com?
+	Can you find the secret flag in TXT record of a subdomain of witrap.com?
+	What is the subdomain for which only reverse dns entry exists for witrap.com? witrap owns the ip address range: 192.168.*.*
+	How many records are present in reverse zone for witrap.com (excluding SOA)? witrap owns the ip address range: 192.168.*.* 
+
+
+Questions:
+	What is the key ID of key signing key of witrap.com?
+	What is the algorithm used for to create KSK and ZSK for witrap.com?
+	What is the RRSIG A Record of witrap.com?
+	What is the Salt used for hash Calculation for NSEC3?
+	How many RRSIG records exists for witrap.com?

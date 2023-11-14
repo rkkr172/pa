@@ -1,0 +1,18 @@
+Questions
+	What is the version of MySQL server?
+	What command is used to connect to remote MySQL database?
+	How many databases are present on the database server?
+	How many records are present in table “authors”? This table is present inside the “books” database.
+	Dump the schema of all databases from the server using suitable metasploit module?
+	How many directories present in the /usr/share/metasploit-framework/data/wordlists/directory.txt, are writable? List the names.
+	How many of sensitive files present in /usr/share/metasploit-framework/data/wordlists/sensitive_files.txt are readable? List the names.
+	Find the system password hash for user "root".
+	How many database users are present on the database server? Lists their names and password hashes.
+	Check whether anonymous login is allowed on MySQL Server.
+	Check whether “InteractiveClient” capability is supported on the MySQL server.
+	Enumerate the users present on MySQL database server using mysql-users nmap script.
+	List all databases stored on the MySQL Server using nmap script.
+	Find the data directory used by mysql server using nmap script.
+	Check whether File Privileges can be granted to non admin users using mysql_audi nmap script.
+	Dump all user hashes using  nmap script.
+	Find the number of records stored in table “authors” in database “books” stored on MySQL Server using mysql-query nmap script.
