@@ -1,1 +1,0 @@
-URL: https://fx43umw4ha.execute-api.ap-southeast-1.amazonaws.com/production

@@ -1,1 +1,0 @@
-URL: https://7vabz65evl.execute-api.ap-southeast-1.amazonaws.com/default/
