@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+import sys
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from scapy.all import *
+
+PROBE_REQ_TYPE = 0
+PROBE_REQ_SUBTYPE = 4
+
+
+def PacketHandler(pkt) :
+        # Check if WiFi packet
+        if pkt.haslayer(Dot11):
+                # check if packet is probe request
+                if pkt.type == PROBE_REQ_TYPE and pkt.subtype == PROBE_REQ_SUBTYPE :
+                        # If SSID field is not empty
+                        if pkt.info:
+                            # Print Client MAC and SSID
+                            print "Probe Request - Client: %s  SSID: %s" % (pkt.addr2, pkt.info)
+
+
+
+# Command Arguments: pcap_file
+
+# Iterating over packets read fromPCAP file
+for pkt in rdpcap(sys.argv[1]) :
+        PacketHandler(pkt)

@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+# Prints a list of all APs with the same SSID - helps uncover a network
+import sys
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from scapy.all import *
+
+# List to store BSSIDs
+ap_list = []
+
+def PacketHandler(pkt) :
+        # Check if WiFi packet
+        if pkt.haslayer(Dot11) :
+                # Check if Beacon frame
+                if pkt.type == 0 and pkt.subtype == 8 :
+                        # SSID is same as passed <ssid>
+                        if pkt.info == sys.argv[3] :
+                                # Check if BSSID NOT present in list
+                                if pkt.addr2 not in ap_list :
+                                         # Add BSSID to the list
+                                        ap_list.append(pkt.addr2)
+                                        print "New AP Found for SSID : %s with MAC: %s " % (pkt.info, pkt.addr2)
+
+
+# Command Arguments: <interface_name> <number_of_packets> <ssid>
+
+# Sniffing on <interface_name> for <number_of_packets> packets
+sniff(iface= sys.argv[1], count = int(sys.argv[2]), prn = PacketHandler)

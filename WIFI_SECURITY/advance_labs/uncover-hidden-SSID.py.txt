@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+
+# Uncovers Hidden SSID
+
+import sys
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from scapy.all import *
+
+PROBE_RESP_TYPE = 0
+PROBE_RESP_SUBTYPE = 5
+
+def PacketHandler(pkt) :
+        # Check if WiFi packet
+        if pkt.haslayer(Dot11):
+                # Check if Probe Response frame
+                if pkt.type == PROBE_RESP_TYPE and pkt.subtype == PROBE_RESP_SUBTYPE :
+                        # Check if mac address of AP is same as <bssid>
+                        if pkt.addr2 == sys.argv[3] :
+                                # Print SSID for passed BSSID
+                                print "Uncovered SSID: %s " %pkt.info
+
+        else :
+                print "Non 802.11 Packet"
+
+# Command Arguments: <interface_name> <number_of_packets> <bssid>
+
+# Sniffing on <interface_name> for <number_of_packets> packets
+sniff(iface=sys.argv[1], count=int(sys.argv[2]), prn=PacketHandler)

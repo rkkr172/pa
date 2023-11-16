@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+# Monitors all probes going out of a Single Client based on MAC Address of client
+
+import sys
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from scapy.all import *
+
+PROBE_REQ_TYPE = 0
+PROBE_REQ_SUBTYPE = 4
+
+# List to store unique SSIDs
+unique_ssids = []
+
+def PacketHandler(pkt) :
+        # Check if WiFi Packet
+        if pkt.haslayer(Dot11):
+                # Check if Probe Request
+                if pkt.type == PROBE_REQ_TYPE and pkt.subtype == PROBE_REQ_SUBTYPE :
+                        # Check if packet from client with MAC <client_mac>
+                        if pkt.addr2 == sys.argv[3].lower() :
+                                # Check if SSID already NOT present in list
+                                if pkt.info not in unique_ssids:
+                                        # Adding SSID to list
+                                        unique_ssids.append(pkt.info)
+                                        print "Probe Request - Client: %s  SSID: %s" % (pkt.addr2, pkt.info)
+
+# Command arguments: <wlan_interface>  <number_of_packets> <client_mac>
+
+# Sniff <number_of_packets> on <wlan_interface>
+sniff(iface=sys.argv[1], count=int(sys.argv[2]), prn=PacketHandler)

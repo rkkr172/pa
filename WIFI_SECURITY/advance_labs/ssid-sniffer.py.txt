@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+# SSID Sniffer -
+
+import sys
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from scapy.all import *
+
+BEACON_TYPE = 0
+BEACON_SUBTYPE = 8
+
+# List to store BSSIDs
+ap_list = []
+
+def PacketHandler(pkt) :
+        # Check if WiFi packet
+        if pkt.haslayer(Dot11):
+                # Check if Beacon frame
+                if pkt.type == 0 and pkt.subtype == 8 :
+                        # Removing hidden SSID networks
+                        if pkt.info :
+                                # Check if SSID NOT present in list
+                                if pkt.addr2 not in ap_list :
+                                        # Add BSSID to the list
+                                        ap_list.append(pkt.addr2)
+                                        # Print BSSID and SSID
+                                        print "Beacon Frame - BSSID: %s  SSID: %s" % (pkt.addr2, pkt.info)
+
+
+# Command Arguments: <interface_name> <number_of_packets>
+
+# Sniffing on <interface_name> for <number_of_packets> packets
+sniff(iface=sys.argv[1], count=int(sys.argv[2]), prn=PacketHandler)
